@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>아이디어 16: 상호작용하는 ASCII 언덕 (라이트 모드)</title>
+    <style>
+        body {
+            margin: 0;
+            /* 배경을 흰색으로 변경 */
+            background-color: #ffffff;
+            overflow: hidden;
+            font-family: 'SF Mono', 'Courier New', Courier, monospace;
+        }
+        canvas {
+            display: block;
+            /* 캔버스 배경을 흰색으로 변경 */
+            background-color: #ffffff;
+            width: 100vw;
+            height: 100vh;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas1"></canvas>
+
+    <script>
+        // --- 공통 설정 ---
+        // 문자를 밝기/밀도에 따라 6단계로 재정의
+        const charLevels = [
+            [' ', '.', '`'],      
+            [',', "'", '"'],
+            [':', '~', '-'],
+            ['*', '!', '|'],
+            ['=', '$', '#'],
+            ['@', '%', '&']       
+        ];
+
+        /**
+         * 지정된 캔버스에 웨이브 애니메이션을 생성하는 함수
+         * @param {string} canvasId - 캔버스의 ID
+         * @param {object} options - 애니메이션 커스텀 옵션
+         */
+        function createWaveAnimation(canvasId, options) {
+            const canvas = document.getElementById(canvasId);
+            const ctx = canvas.getContext('2d');
+            
+            function resizeCanvas() {
+                const dpr = window.devicePixelRatio || 1;
+                canvas.width = window.innerWidth * dpr;
+                canvas.height = window.innerHeight * dpr;
+                ctx.scale(dpr, dpr);
+            }
+            window.addEventListener('resize', resizeCanvas);
+            resizeCanvas();
+
+            // 옵션 기본값 설정
+            const config = {
+                numberOfColumns: 240,
+                fontSize: 14,
+                columnSpacing: 8,
+                verticalSpacing: 14 * 0.7,
+                easing: 0.08, 
+                // 기본 문자 색상을 검은색으로 변경
+                baseColor: '#000000',
+                mouseInfluenceRadius: 150, 
+                maxMouseEffectHeight: 200,   
+                ...options
+            };
+            
+            let columns = [];
+            for (let i = 0; i < config.numberOfColumns; i++) {
+                columns.push({ currentHeight: 0, targetHeight: 0 });
+            }
+
+            let frameCount = 0;
+            let mouse = { x: null, y: null };
+
+            // 마우스 이벤트 리스너 추가
+            canvas.addEventListener('mousemove', e => {
+                const rect = canvas.getBoundingClientRect();
+                mouse.x = e.clientX - rect.left;
+                mouse.y = e.clientY - rect.top;
+            });
+            canvas.addEventListener('mouseout', () => {
+                mouse.x = null;
+                mouse.y = null;
+            });
+
+            function draw() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                const totalWidth = config.columnSpacing * (config.numberOfColumns - 1);
+                const startX = (canvas.clientWidth - totalWidth) / 2;
+
+                ctx.font = `bold ${config.fontSize}px monospace`;
+                ctx.textAlign = 'center';
+
+                config.updateLogic(columns, mouse, frameCount, config);
+
+                for (let i = 0; i < config.numberOfColumns; i++) {
+                    const col = columns[i];
+                    
+                    col.currentHeight += (col.targetHeight - col.currentHeight) * config.easing;
+
+                    const columnX = startX + i * config.columnSpacing;
+                    const charCountInStack = Math.floor(col.currentHeight / config.verticalSpacing);
+
+                    config.drawLogic(ctx, i, columnX, charCountInStack, col.currentHeight, config);
+                }
+            }
+
+            function animate() {
+                draw();
+                frameCount++;
+                requestAnimationFrame(animate);
+            }
+            animate();
+        }
+
+        // --- 생성형 언덕 애니메이션 실행 ---
+        createWaveAnimation('canvas1', {
+            updateLogic: (columns, mouse, frameCount, config) => {
+                const canvas = document.getElementById('canvas1');
+                const maxHeight = canvas.clientHeight * 0.4;
+                const midPoint = config.numberOfColumns / 2;
+                const time = frameCount * 0.005;
+                const pulse = (Math.sin(time) + 1) / 2;
+                const totalWidth = config.columnSpacing * (config.numberOfColumns - 1);
+                const startX = (canvas.clientWidth - totalWidth) / 2;
+
+
+                columns.forEach((col, i) => {
+                    const distanceFromCenter = i - midPoint;
+                    const normalizedDist = distanceFromCenter / midPoint;
+                    const hillHeight = 1 - (normalizedDist * normalizedDist); 
+                    const animatedHeight = maxHeight * hillHeight * (0.85 + pulse * 0.15);
+
+                    // 마우스 효과 계산
+                    let mouseEffect = 0;
+                    if (mouse.x !== null) {
+                        const columnX = startX + i * config.columnSpacing;
+                        const distance = Math.abs(columnX - mouse.x);
+                        if (distance < config.mouseInfluenceRadius) {
+                            const normalized = distance / config.mouseInfluenceRadius;
+                            mouseEffect = config.maxMouseEffectHeight * ((Math.cos(normalized * Math.PI) + 1) / 2);
+                        }
+                    }
+                    
+                    col.targetHeight = animatedHeight + mouseEffect;
+                });
+            },
+            drawLogic: (ctx, columnIndex, x, count, height, config) => {
+                ctx.fillStyle = config.baseColor;
+                // 흰 배경에서는 그림자 효과를 제거하여 깔끔하게 표시
+                // ctx.shadowColor = config.baseColor;
+                // ctx.shadowBlur = 4;
+                const midPoint = config.numberOfColumns / 2;
+
+                for (let j = 0; j < count; j++) {
+                    const horizontalFactor = 1 - Math.abs((columnIndex - midPoint) / midPoint);
+                    const verticalFactor = count > 1 ? 1 - (j / (count - 1)) : 1;
+                    
+                    const darkness = (horizontalFactor * 0.6) + (verticalFactor * 0.4);
+
+                    const baseLevel = darkness * (charLevels.length - 1);
+                    let levelIndex = Math.floor(baseLevel);
+                    
+                    const probability = baseLevel - levelIndex;
+                    const ditherValue = (((columnIndex * 7) + (j * 11)) % 13) / 13;
+                    if (ditherValue < probability) {
+                        levelIndex++;
+                    }
+                    
+                    const clampedIndex = Math.max(0, Math.min(charLevels.length - 1, levelIndex));
+                    const charSet = charLevels[clampedIndex];
+                    const char = charSet[(columnIndex + j) % charSet.length];
+                    
+                    ctx.fillText(char, x, (j * config.verticalSpacing) + config.fontSize);
+                }
+            }
+        });
+    </script>
+</body>
+</html>
+
