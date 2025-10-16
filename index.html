@@ -4,25 +4,280 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>아이디어 16: 상호작용하는 ASCII 언덕 (라이트 모드)</title>
+    <!-- Swiper.js CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+
     <style>
         body {
             margin: 0;
             /* 배경을 흰색으로 변경 */
             background-color: #ffffff;
-            overflow: hidden;
             font-family: 'SF Mono', 'Courier New', Courier, monospace;
+            color: #000000;
+            text-align: center; /* 전체적인 텍스트 중앙 정렬 */
         }
         canvas {
             display: block;
             /* 캔버스 배경을 흰색으로 변경 */
             background-color: #ffffff;
-            width: 100vw;
-            height: 100vh;
+            /* 뷰포트 전체를 채우도록 설정 */
+            width: 100%; 
+            /* 컨테이너 높이에 맞춤 */
+            height: 100%; 
+        }
+        .animation-section {
+            height: 100vh; /* 화면 전체 높이를 차지 */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .image-overlay {
+            width: 100%;
+            display: flex;
+            justify-content: center; /* 이미지들을 중앙 정렬 */
+            align-items: center;
+            gap: 20px; /* 이미지 사이의 간격 */
+            padding: 33vh 0 5vh 0; /* 상단에 1/3 여백, 하단에 여백 추가 */
+        }
+        .image-overlay img {
+            height: 50px; /* 이미지 높이 지정 */
+        }
+        .content-section {
+            display: flex;
+            justify-content: center;
+            align-items: center; /* 자식 요소들을 수직 중앙 정렬합니다. */
+            gap: 40px; /* 좌우 패널 사이 간격 */
+            padding: 10vh 5vw; /* 상하, 좌우 여백 추가 */
+        }
+        .left-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 20px; /* 내부 요소들 간의 간격 */
+            width: 490px; /* 너비 고정 */
+            text-align: left; /* 패널 내부 텍스트는 왼쪽 정렬 */
+        }
+        .right-text-panel {
+            width: 250px; /* 오른쪽 패널 너비 설정 */
+        }
+        .right-text-panel p {
+            margin: 0 0 1em 0; /* 단락 아래 여백 추가 */
+            text-align: left; /* 패널 내부 텍스트는 왼쪽 정렬 */
+        }
+        .left-panel p, .left-panel h2 {
+            margin: 0;
+        }
+        .left-panel h2 {
+            font-size: 2em;
+        }
+        .image-box {
+            width: 490px;
+            height: 690px;
+            border: 1px solid #000000;
+            box-sizing: border-box; /* 테두리를 크기에 포함 */
+        }
+        .projects-section {
+            padding: 10vh 5vw; /* 상하, 좌우 여백 추가 */
+            text-align: left; /* 텍스트 왼쪽 정렬 */
+        }
+        .projects-section h2 {
+            font-size: 2em; /* 다른 제목과 폰트 크기 통일 */
+            margin: 0 0 40px 0; /* 제목 아래에 여백 추가 */
+        }
+        .project-filters {
+            display: flex;
+            flex-direction: column; /* 버튼을 세로로 정렬 */
+            align-items: flex-start; /* 버튼을 왼쪽에 정렬 */
+            gap: 15px; /* 버튼 사이 간격 */
+            margin-bottom: 40px; /* 필터 아래 여백 추가 (프로젝트 목록을 위해) */
+        }
+        .project-filters button {
+            background-color: transparent;
+            border: 1px solid #000000;
+            border-radius: 20px; /* 둥근 모서리 */
+            padding: 8px 20px;
+            font-family: inherit; /* body의 폰트를 상속받음 */
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .project-filters button:hover,
+        .project-filters button.active {
+            background-color: #000000;
+            color: #ffffff;
+        }
+        /* Swiper 컨테이너 스타일 */
+        .swiper {
+            width: 100%;
+            padding-top: 50px;
+            padding-bottom: 50px;
+        }
+        .swiper-slide {
+            width: 292px; /* 중앙 카드 크기 기준 */
+            height: 394px; /* 중앙 카드 크기 기준 */
+            box-sizing: border-box;
+            background-color: #e0e0e0; /* card.png의 회색과 유사한 배경색 */
+            border-radius: 15px; /* card.png와 유사한 둥근 모서리 */
+            position: relative; /* 내부 텍스트 위치 지정을 위한 기준 */
+        }
+        .card-text {
+            position: absolute;
+            padding: 20px;
+            color: #000;
+            z-index: 5; /* 링크(a) 위에 텍스트가 오도록 설정 */
+            pointer-events: none; /* 텍스트가 마우스 이벤트를 방해하지 않도록 설정 */
+        }
+        .card-text.top-left {
+            top: -10px; /* 카드의 상단 경계선 위로 텍스트를 이동 */
+            left: 0;
+            font-size: 1.8em;
+            font-weight: bold;
+        }
+        .card-text.top-right {
+            top: -10px; /* 카드의 상단 경계선 위로 텍스트를 이동 */
+            right: 0;
+            font-size: 0.9em;
+        }
+        .swiper-slide a {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+        /* 페이지네이션(하단 점) 스타일 */
+        .swiper-pagination-bullet {
+            background-color: #888888 !important;
+            opacity: 1;
+        }
+        .swiper-pagination-bullet-active {
+            background-color: #000000 !important;
         }
     </style>
 </head>
 <body>
-    <canvas id="canvas1"></canvas>
+    <div class="image-overlay">
+        <img src="c.png" alt="c">
+        <img src="o.png" alt="o">
+        <img src="d.png" alt="d">
+        <img src="e.png" alt="e">
+    </div>
+    <div class="animation-section">
+        <canvas id="canvas1"></canvas>
+    </div>
+    <div class="content-section">
+        <div class="left-panel">
+            <p>세상을 읽고</p>
+            <h2>Decoding</h2>
+            <div class="image-box"></div>
+            <h2>Encoding</h2>
+        </div>
+        <div class="right-text-panel">
+            <p>시각으로 답하다</p>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et</p>
+        </div>
+    </div>
+    <div class="projects-section">
+        <h2>Featured Projects</h2>
+        <div class="project-filters">
+            <button class="active">전체</button>
+            <button>UX/UI</button>
+            <button>WEB</button>
+        </div>
+        <!-- Swiper 슬라이더 컨테이너 -->
+        <div class="swiper mySwiper">
+            <div class="swiper-wrapper">
+                <!-- Slides -->
+                <div class="swiper-slide">
+                    <div class="card-text top-left">Lorem ipsum</div>
+                    <div class="card-text top-right">Lorem ipsum</div>
+                    <a href="#"></a>
+                </div>
+                <div class="swiper-slide">
+                    <div class="card-text top-left">Lorem ipsum</div>
+                    <div class="card-text top-right">Lorem ipsum</div>
+                    <a href="#"></a>
+                </div>
+                <div class="swiper-slide">
+                    <div class="card-text top-left">Lorem ipsum</div>
+                    <div class="card-text top-right">Lorem ipsum</div>
+                    <a href="#"></a>
+                </div>
+                <div class="swiper-slide">
+                    <div class="card-text top-left">Lorem ipsum</div>
+                    <div class="card-text top-right">Lorem ipsum</div>
+                    <a href="#"></a>
+                </div>
+                <div class="swiper-slide">
+                    <div class="card-text top-left">Lorem ipsum</div>
+                    <div class="card-text top-right">Lorem ipsum</div>
+                    <a href="#"></a>
+                </div>
+                <div class="swiper-slide">
+                    <div class="card-text top-left">Lorem ipsum</div>
+                    <div class="card-text top-right">Lorem ipsum</div>
+                    <a href="#"></a>
+                </div>
+                <div class="swiper-slide">
+                    <div class="card-text top-left">Lorem ipsum</div>
+                    <div class="card-text top-right">Lorem ipsum</div>
+                    <a href="#"></a>
+                </div>
+                <div class="swiper-slide">
+                    <div class="card-text top-left">Lorem ipsum</div>
+                    <div class="card-text top-right">Lorem ipsum</div>
+                    <a href="#"></a>
+                </div>
+                <div class="swiper-slide">
+                    <div class="card-text top-left">Lorem ipsum</div>
+                    <div class="card-text top-right">Lorem ipsum</div>
+                    <a href="#"></a>
+                </div>
+                <div class="swiper-slide">
+                    <div class="card-text top-left">Lorem ipsum</div>
+                    <div class="card-text top-right">Lorem ipsum</div>
+                    <a href="#"></a>
+                </div>
+                <div class="swiper-slide">
+                    <div class="card-text top-left">Lorem ipsum</div>
+                    <div class="card-text top-right">Lorem ipsum</div>
+                    <a href="#"></a>
+                </div>
+                <div class="swiper-slide">
+                    <div class="card-text top-left">Lorem ipsum</div>
+                    <div class="card-text top-right">Lorem ipsum</div>
+                    <a href="#"></a>
+                </div>
+                <div class="swiper-slide">
+                    <div class="card-text top-left">Lorem ipsum</div>
+                    <div class="card-text top-right">Lorem ipsum</div>
+                    <a href="#"></a>
+                </div>
+                <div class="swiper-slide">
+                    <div class="card-text top-left">Lorem ipsum</div>
+                    <div class="card-text top-right">Lorem ipsum</div>
+                    <a href="#"></a>
+                </div>
+                <div class="swiper-slide">
+                    <div class="card-text top-left">Lorem ipsum</div>
+                    <div class="card-text top-right">Lorem ipsum</div>
+                    <a href="#"></a>
+                </div>
+                <div class="swiper-slide">
+                    <div class="card-text top-left">Lorem ipsum</div>
+                    <div class="card-text top-right">Lorem ipsum</div>
+                    <a href="#"></a>
+                </div>
+                <div class="swiper-slide">
+                    <div class="card-text top-left">Lorem ipsum</div>
+                    <div class="card-text top-right">Lorem ipsum</div>
+                    <a href="#"></a>
+                </div>
+            </div>
+            <!-- 페이지네이션 -->
+            <div class="swiper-pagination"></div>
+        </div>
+    </div>
+
+    <!-- Swiper.js JS -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
     <script>
         // --- 공통 설정 ---
@@ -47,8 +302,9 @@
             
             function resizeCanvas() {
                 const dpr = window.devicePixelRatio || 1;
-                canvas.width = window.innerWidth * dpr;
-                canvas.height = window.innerHeight * dpr;
+                // 부모 요소(.right-panel)의 크기를 기준으로 캔버스 크기 설정
+                canvas.width = canvas.parentElement.offsetWidth * dpr;
+                canvas.height = canvas.parentElement.offsetHeight * dpr;
                 ctx.scale(dpr, dpr);
             }
             window.addEventListener('resize', resizeCanvas);
@@ -180,7 +436,30 @@
                 }
             }
         });
+
+        // --- Swiper.js 초기화 ---
+        var swiper = new Swiper(".mySwiper", {
+            effect: "coverflow", // 커버플로우 효과 적용
+            grabCursor: true,      // 마우스 커서를 잡는 모양으로 변경
+            centeredSlides: true,  // 활성 슬라이드를 중앙에 배치
+            slidesPerView: "auto", // 한 번에 보여줄 슬라이드 개수를 자동으로 설정
+            loop: true,            // 무한 루프 활성화
+            autoplay: {
+              delay: 2500, // 2.5초마다 자동으로 슬라이드
+              disableOnInteraction: false, // 사용자가 조작한 후에도 자동 슬라이드 계속
+            },
+            coverflowEffect: {
+                rotate: 0,         // 슬라이드 회전 각도 (0으로 설정하여 정면 유지)
+                stretch: -100,       // 슬라이드 간 간격 (음수 값으로 겹치게 설정)
+                depth: 400,        // 슬라이드 간 깊이감 (크기 변화)
+                modifier: 1,       // 효과 강도
+                slideShadows: false, // 슬라이드 그림자 비활성화
+            },
+            pagination: {
+                el: ".swiper-pagination",
+                clickable: true,   // 페이지네이션 버튼 클릭 가능
+            },
+        });
     </script>
 </body>
 </html>
-
