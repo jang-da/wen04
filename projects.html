@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Graduation Exhibition Portfolio Timeline</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Noto+Sans+KR:wght@400;500;600;700&family=Source+Code+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --c-white: #FFFFFF;
+            --c-light-gray: #E4E7EC;
+            --c-orange-red: #FF4A28;
+            --c-black: #000000;
+            --f-primary: 'Noto Sans KR', sans-serif;
+            --f-code: 'Source Code Pro', monospace;
+            --f-display: 'DotGothic16', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html, body {
+            /* 페이지 전체에서 가로 스크롤이 생기는 것을 방지합니다. */
+            overflow-x: hidden;
+        }
+
+        html { scroll-behavior: smooth; }
+        ::selection { background: var(--c-orange-red); color: var(--c-white); }
+
+        body {
+            font-family: var(--f-primary);
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 60px 0;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Site Header */
+        .site-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
+            background-color: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            border-bottom: 1px solid var(--c-light-gray);
+        }
+
+        .site-header .logo a {
+             font-family: var(--f-display);
+             font-size: 1.5rem;
+             font-weight: 400;
+             color: var(--c-black);
+             text-decoration: none;
+             letter-spacing: 0.1rem;
+             transition: color 0.3s ease;
+        }
+
+        .site-header .logo a:hover {
+            color: var(--c-orange-red);
+        }
+
+        .site-header nav {
+            display: flex;
+            gap: 8px;
+        }
+
+        .site-header nav a {
+            font-family: var(--f-primary);
+            font-size: 1rem;
+            font-weight: 400;
+            color: var(--c-black);
+            text-decoration: none;
+            padding: 8px 16px;
+            border: 1px solid transparent;
+            transition: all 0.2s ease;
+        }
+        
+        .site-header nav a:hover,
+        .site-header nav a.active {
+            border-color: var(--c-black);
+            background-color: var(--c-black);
+            color: var(--c-white);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #222;
+            margin-bottom: 16px;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            color: #666;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .timeline {
+            position: relative;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .timeline::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            width: 1px;
+            background: #d1d5db;
+            transform: translateX(-50%);
+            z-index: 1;
+        }
+
+        .timeline-item {
+            position: relative;
+            width: 50%;
+            padding: 40px 20px;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+
+        .timeline-item.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .timeline-item.left {
+            left: 0;
+            text-align: right;
+        }
+
+        .timeline-item.right {
+            left: 50%;
+            text-align: left;
+        }
+
+        .timeline-item::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            width: calc(50% - 60px);
+            height: 1px;
+            background: #d1d5db;
+            transform: translateY(-50%);
+            z-index: 2;
+        }
+
+        .timeline-item.left::before {
+            right: 0;
+        }
+
+        .timeline-item.right::before {
+            left: 0;
+        }
+
+        .timeline-item::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            width: 8px;
+            height: 8px;
+            background: #9ca3af;
+            border-radius: 50%;
+            transform: translateY(-50%) translateX(-50%);
+            left: 50%;
+            z-index: 10;
+        }
+
+        .content {
+            background: #fff;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            transition: all 0.3s ease;
+            max-width: 400px;
+            margin: 0 auto;
+            border: 1px solid #f3f4f6;
+        }
+
+        .content:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        .image {
+            background: #f8fafc;
+            aspect-ratio: 1 / 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #94a3b8;
+            font-size: 13px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+
+        h3 {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #222;
+            font-size: 1.25rem;
+        }
+
+        .tags {
+            margin-bottom: 12px;
+        }
+
+        .tags span {
+            display: inline-block;
+            background: #f1f5f9;
+            color: #64748b;
+            border-radius: 6px;
+            font-size: 12px;
+            margin-right: 6px;
+            padding: 4px 8px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .description {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+
+        .author {
+            color: #aaa;
+            font-size: 12px;
+            margin-top: 8px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            body {
+                padding: 40px 0;
+            }
+
+            .header {
+                margin-bottom: 60px;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .header p {
+                font-size: 1rem;
+                padding: 0 20px;
+            }
+
+            .timeline::before {
+                left: 12px;
+                transform: none;
+                background: #e2e8f0;
+            }
+
+            .timeline-item {
+                width: 100%;
+                padding-left: 40px;
+                text-align: left;
+                padding-right: 20px;
+            }
+
+            .timeline-item.left,
+            .timeline-item.right {
+                left: 0;
+            }
+
+            .timeline-item::before {
+                width: 25px;
+                left: 12px;
+                right: auto;
+                background: #e2e8f0;
+            }
+
+            .timeline-item::after {
+                left: 12px;
+                transform: translateY(-50%) translateX(-50%);
+                background: #94a3b8;
+                width: 6px;
+                height: 6px;
+            }
+
+            .content {
+                max-width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 15px;
+            }
+
+            .header h1 {
+                font-size: 1.75rem;
+            }
+
+            .timeline-item {
+                padding-left: 35px;
+            }
+
+            .timeline-item::before {
+                width: 20px;
+                left: 12px;
+            }
+
+            .content {
+                padding: 16px;
+            }
+
+            .image {
+                margin-bottom: 12px;
+            }
+
+            h3 {
+                font-size: 1.1rem;
+            }
+        }
+
+        /* Search Bar */
+        .search-container {
+            display: flex;
+            justify-content: flex-end; /* 검색창을 오른쪽으로 정렬 */
+            margin-bottom: 40px; /* 타임라인과의 간격 */
+        }
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+            background: white;
+            border-radius: 8px;
+            padding: 8px 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border: 1px solid #e5e5e5;
+        }
+
+        .search-bar input {
+            border: none;
+            outline: none;
+            font-family: inherit;
+            font-size: 14px;
+            width: 200px;
+            background: transparent;
+        }
+
+        .search-icon {
+            width: 16px;
+            height: 16px;
+            margin-left: 8px;
+            color: #777;
+        }
+
+        @media (max-width: 768px) {
+            .search-container {
+                display: none; /* 모바일에서는 검색창 숨김 (선택사항) */
+            }
+
+            .search-bar input {
+                width: 150px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .search-bar input {
+                width: 120px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Site Header -->
+    <header class="site-header">
+        <div class="logo">
+            <a href="index.html">CODE.</a>
+        </div>
+        <nav>
+            <a href="projects.html" class="active">PROJECTS</a>
+            <a href="profile.html">ARTISTS</a>
+            <a href="index.html#about">ABOUT</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>Graduation Exhibition</h1>
+            <p>Designers decode the world and re-encode it visually. Each portfolio represents a creative ripple connected by our shared timeline.</p>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="search-container">
+            <div class="search-bar">
+                <input type="text" placeholder="Search by name or artwork" id="searchInput">
+                <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 0 0 1.48-5.34c-.47-2.78-2.79-5-5.59-5.34a6.505 6.505 0 0 0-7.27 7.27c.34 2.8 2.56 5.12 5.34 5.59a6.5 6.5 0 0 0 5.34-1.48l.27.28v.79l4.25 4.25c.41.41 1.08.41 1.49 0 .41-.41.41-1.08 0-1.49L15.5 14zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                </svg>
+            </div>
+        </div>
+
+        <!-- Timeline -->
+        <div class="timeline">
+            <!-- Portfolio Item 1 -->
+            <div class="timeline-item left" data-title="작품 제목" data-tags="Interactive WebGL" data-description="작품 설명이 들어갑니다. 간단한 소개와 컨셉을 담습니다.">
+                <div class="content">
+                    <div class="image">[ 1:1 Artwork Image ]</div>
+                    <h3>작품 제목</h3>
+                    <div class="tags">
+                        <span>#Interactive</span>
+                        <span>#WebGL</span>
+                    </div>
+                    <p class="description">작품 설명이 들어갑니다. 간단한 소개와 컨셉을 담습니다.</p>
+                    <p class="author">성욱 · 2025</p>
+                </div>
+            </div>
+
+            <!-- Portfolio Item 2 -->
+            <div class="timeline-item right" data-title="Interactive Bloom" data-tags="interactive media" data-description="Interactive digital installation exploring the intersection of nature and technology through responsive visual elements.">
+                <div class="content">
+                    <div class="image">[ 1:1 Artwork Image ]</div>
+                    <h3>Interactive Bloom</h3>
+                    <div class="tags">
+                        <span>#interactive</span>
+                        <span>#media</span>
+                    </div>
+                    <p class="description">Interactive digital installation exploring the intersection of nature and technology through responsive visual elements.</p>
+                    <p class="author">민수 · 2025</p>
+                </div>
+            </div>
+
+            <!-- Portfolio Item 3 -->
+            <div class="timeline-item left" data-title="Urban Echoes" data-tags="sound installation" data-description="Sound installation that captures and amplifies the hidden rhythms of urban environments through field recordings.">
+                <div class="content">
+                    <div class="image">[ 1:1 Artwork Image ]</div>
+                    <h3>Urban Echoes</h3>
+                    <div class="tags">
+                        <span>#sound</span>
+                        <span>#installation</span>
+                    </div>
+                    <p class="description">Sound installation that captures and amplifies the hidden rhythms of urban environments through field recordings.</p>
+                    <p class="author">지현 · 2025</p>
+                </div>
+            </div>
+
+            <!-- Portfolio Item 4 -->
+            <div class="timeline-item right" data-title="Digital Self" data-tags="projection identity" data-description="Projection mapping piece that examines how digital personas shape our understanding of personal identity.">
+                <div class="content">
+                    <div class="image">[ 1:1 Artwork Image ]</div>
+                    <h3>Digital Self</h3>
+                    <div class="tags">
+                        <span>#projection</span>
+                        <span>#identity</span>
+                    </div>
+                    <p class="description">Projection mapping piece that examines how digital personas shape our understanding of personal identity.</p>
+                    <p class="author">준호 · 2025</p>
+                </div>
+            </div>
+
+            <!-- Portfolio Item 5 -->
+            <div class="timeline-item left" data-title="Kinetic Sculpture" data-tags="physical art" data-description="Mechanical sculpture that responds to viewer presence, creating a dynamic dialogue between art and audience.">
+                <div class="content">
+                    <div class="image">[ 1:1 Artwork Image ]</div>
+                    <h3>Kinetic Sculpture</h3>
+                    <div class="tags">
+                        <span>#physical</span>
+                        <span>#art</span>
+                    </div>
+                    <p class="description">Mechanical sculpture that responds to viewer presence, creating a dynamic dialogue between art and audience.</p>
+                    <p class="author">서연 · 2025</p>
+                </div>
+            </div>
+
+            <!-- Portfolio Item 6 -->
+            <div class="timeline-item right" data-title="Memory Palace" data-tags="vr narrative" data-description="An immersive VR experience exploring the relationship between memory and space through interactive storytelling.">
+                <div class="content">
+                    <div class="image">[ 1:1 Artwork Image ]</div>
+                    <h3>Memory Palace</h3>
+                    <div class="tags">
+                        <span>#vr</span>
+                        <span>#narrative</span>
+                    </div>
+                    <p class="description">An immersive VR experience exploring the relationship between memory and space through interactive storytelling.</p>
+                    <p class="author">태현 · 2025</p>
+                </div>
+            </div>
+
+            <!-- Portfolio Item 7 -->
+            <div class="timeline-item left" data-title="Light Patterns" data-tags="light generative" data-description="Generative light installations that respond to environmental data, creating dynamic visual patterns.">
+                <div class="content">
+                    <div class="image">[ 1:1 Artwork Image ]</div>
+                    <h3>Light Patterns</h3>
+                    <div class="tags">
+                        <span>#light</span>
+                        <span>#generative</span>
+                    </div>
+                    <p class="description">Generative light installations that respond to environmental data, creating dynamic visual patterns.</p>
+                    <p class="author">현우 · 2025</p>
+                </div>
+            </div>
+
+            <!-- Portfolio Item 8 -->
+            <div class="timeline-item right" data-title="Digital Weaving" data-tags="textile technology" data-description="Traditional weaving techniques meet digital fabrication, creating hybrid textile artworks.">
+                <div class="content">
+                    <div class="image">[ 1:1 Artwork Image ]</div>
+                    <h3>Digital Weaving</h3>
+                    <div class="tags">
+                        <span>#textile</span>
+                        <span>#technology</span>
+                    </div>
+                    <p class="description">Traditional weaving techniques meet digital fabrication, creating hybrid textile artworks.</p>
+                    <p class="author">지영 · 2025</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Intersection Observer for scroll animations
+        const items = document.querySelectorAll('.timeline-item');
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, {
+            threshold: 0.1
+        });
+
+        items.forEach(item => observer.observe(item));
+
+        // Search functionality
+        const searchInput = document.getElementById('searchInput');
+        
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            
+            items.forEach(item => {
+                const title = item.dataset.title.toLowerCase();
+                const tags = item.dataset.tags.toLowerCase();
+                const description = item.dataset.description.toLowerCase();
+                
+                if (title.includes(searchTerm) || tags.includes(searchTerm) || description.includes(searchTerm)) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+
+        // Smooth scroll behavior
+        document.documentElement.style.scrollBehavior = 'smooth';
+    </script>
+</body>
+</html>

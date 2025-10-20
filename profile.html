@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CODE. 프로필</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Noto+Sans+KR:wght@400;500;600;700&family=Source+Code+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --c-white: #FFFFFF;
+            --c-light-gray: #E4E7EC;
+            --c-pale-blue: #BCD7DE;
+            --c-orange-red: #FF4A28;
+            --c-dark-cocoa: #573722;
+            --c-black: #000000;
+            --c-text-primary: #4A4A4A;
+            --c-text-secondary: #8B8B8B;
+            --f-primary: 'Noto Sans KR', sans-serif;
+            --f-code: 'Source Code Pro', monospace;
+            --f-display: 'DotGothic16', sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        html, body {
+            /* 페이지 전체에서 가로 스크롤이 생기는 것을 방지합니다. */
+            overflow-x: hidden;
+        }
+
+        ::selection { background: var(--c-orange-red); color: var(--c-white); }
+        
+        body {
+            font-family: var(--f-primary);
+            background: var(--c-white);
+            color: var(--c-text-primary);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            padding-top: 71px; /* Adjusted for header height + border */
+        }
+
+        /* Site Header */
+        .site-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
+            background-color: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            border-bottom: 1px solid var(--c-light-gray);
+        }
+
+        .site-header .logo a {
+             font-family: var(--f-display);
+             font-size: 1.5rem;
+             font-weight: 400;
+             color: var(--c-black);
+             text-decoration: none;
+             letter-spacing: 0.1rem;
+             transition: color 0.3s ease;
+        }
+
+        .site-header .logo a:hover {
+            color: var(--c-orange-red);
+        }
+
+        .site-header nav {
+            display: flex;
+            gap: 8px;
+        }
+
+        .site-header nav a {
+            font-family: var(--f-primary);
+            font-size: 1rem;
+            font-weight: 400;
+            color: var(--c-black);
+            text-decoration: none;
+            padding: 8px 16px;
+            border: 1px solid transparent;
+            transition: all 0.2s ease;
+        }
+        
+        .site-header nav a:hover {
+            border-color: var(--c-black);
+            background-color: var(--c-black);
+            color: var(--c-white);
+        }
+
+        .site-header nav a.active {
+            border-color: var(--c-black);
+            background-color: var(--c-black);
+            color: var(--c-white);
+        }
+
+        /* Container */
+        .container { 
+            max-width: 1800px; 
+            margin: 0 auto; 
+            padding: 0 40px; 
+        }
+
+        /* Narrower container only for profile section */
+        .container.profile-container {
+            max-width: 1500px;
+        }
+
+        /* Main Header */
+        .main-header {
+            background: var(--c-white);
+            padding: 60px 0 50px;
+            text-align: center;
+            border-bottom: 1px solid var(--c-black);
+            position: relative;
+        }
+        
+        .main-header h1 { 
+            font-family: var(--f-display);
+            font-size: 8rem; 
+            color: var(--c-black);
+            margin-bottom: 16px;
+            letter-spacing: 0.5rem;
+        }
+        
+        .main-header .subtitle { 
+            font-size: 1.3rem; 
+            color: var(--c-text-secondary);
+            font-family: var(--f-primary);
+            letter-spacing: 0.05rem;
+            min-height: 1.8em;
+        }
+
+        /* Filter Navigation */
+        .filter-section {
+            background-color: var(--c-white);
+            padding: 25px 0;
+            border-bottom: 1px solid var(--c-light-gray);
+            position: sticky;
+            top: 71px; /* Adjusted to sit flush under the header */
+            z-index: 900;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .filter-nav {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .filter-item {
+            font-family: var(--f-display);
+            text-decoration: none;
+            color: var(--c-text-secondary);
+            font-size: 2rem;
+            padding: 8px 16px;
+            border-radius: 0;
+            outline: none;
+            border: none;
+            background: none;
+            cursor: pointer;
+            letter-spacing: 0.2rem;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .filter-item:hover { 
+            color: var(--c-dark-cocoa);
+            background-color: var(--c-light-gray);
+        }
+
+        .filter-item.active { 
+            background-color: var(--c-orange-red);
+            color: var(--c-white); 
+            font-weight: 400;
+        }
+        
+        .filter-item.active:hover {
+             background-color: #E63D1F;
+             color: var(--c-white);
+        }
+
+        /* Profile Section */
+        .profile-section { 
+            padding: 100px 0 120px; 
+            background: var(--c-white);
+        }
+
+        .profile-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 60px 50px;
+        }
+
+        .profile-card {
+            background: var(--c-white);
+            transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .profile-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border: 1px solid var(--c-light-gray);
+            transition: border-color 0.3s ease;
+            pointer-events: none;
+        }
+
+        .profile-card:hover {
+            transform: translateY(-12px);
+        }
+
+        .profile-card:hover::before { 
+            border-color: var(--c-dark-cocoa);
+        }
+
+        .profile-image-wrapper {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            overflow: hidden;
+            background: var(--c-light-gray);
+            position: relative;
+        }
+
+        .profile-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        .profile-card:hover .profile-image {
+            transform: scale(1.05);
+        }
+
+        .profile-image-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--f-code);
+            color: var(--c-text-secondary);
+            font-size: 3rem;
+            letter-spacing: 0.2rem;
+        }
+
+        .profile-content { 
+            padding: 32px 28px; 
+            flex-grow: 1; 
+            display: flex; 
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .profile-header {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .profile-name { 
+            font-size: 1.75rem; 
+            font-weight: 700; 
+            color: var(--c-dark-cocoa);
+            letter-spacing: 0.02rem;
+        }
+
+        .profile-major { 
+            font-weight: 400; 
+            color: var(--c-text-secondary); 
+            font-size: 0.95rem;
+            font-family: var(--f-code);
+            letter-spacing: 0.05rem;
+        }
+
+        .profile-contact { 
+            margin-top: auto;
+            padding-top: 20px; 
+            border-top: 1px solid var(--c-light-gray); 
+            display: flex; 
+            flex-direction: column; 
+            gap: 10px; 
+        }
+
+        .profile-contact a { 
+            font-family: var(--f-code); 
+            color: var(--c-text-secondary); 
+            text-decoration: none; 
+            font-size: 0.85rem; 
+            transition: color 0.3s ease;
+            white-space: nowrap; 
+            overflow: hidden; 
+            text-overflow: ellipsis;
+            letter-spacing: 0.03rem;
+        }
+
+        .profile-contact a:hover { 
+            color: var(--c-orange-red);
+        }
+
+        /* Empty State */
+        .empty-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 80px 0;
+            font-family: var(--f-code);
+            color: var(--c-text-secondary);
+            font-size: 1.2rem;
+            letter-spacing: 0.1rem;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--c-black);
+            color: var(--c-white);
+            padding: 50px 0;
+            border-top: 1px solid var(--c-black);
+        }
+
+        footer .footer-content {
+            display: flex;
+            justify-content: space-between;
+            max-width: 1800px;
+            margin: 0 auto;
+            padding: 0 40px;
+        }
+
+        footer .footer-section h3 {
+            font-family: var(--f-code);
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            font-weight: 400;
+        }
+
+        footer .footer-section p {
+            opacity: 0.7;
+            font-size: 0.9rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .profile-grid { 
+                grid-template-columns: repeat(3, 1fr);
+                gap: 50px 40px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body { padding-top: 61px; }
+            .site-header { padding: 15px 20px; }
+            .site-header .logo a { font-size: 1.2rem; }
+            .site-header nav a { font-size: 0.9rem; padding: 6px 12px; }
+            .container { padding: 0 20px; }
+            .main-header { padding: 50px 0 40px; }
+            .main-header h1 { font-size: 4.5rem; letter-spacing: 0.3rem; }
+            .main-header .subtitle { font-size: 1.1rem; }
+            .filter-section { top: 61px; padding: 20px 0; }
+            .filter-item { font-size: 1.5rem; padding: 6px 12px; }
+            .profile-section { padding: 60px 0 80px; }
+            .profile-grid { 
+                grid-template-columns: 1fr;
+                gap: 50px;
+            }
+            footer .footer-content { 
+                flex-direction: column; 
+                gap: 30px; 
+                text-align: center; 
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main-header h1 { font-size: 3rem; }
+            .filter-item { font-size: 1.3rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="site-header">
+        <div class="logo">
+            <a href="index.html">CODE.</a>
+        </div>
+        <nav>
+            <a href="projects.html">PROJECTS</a>
+            <a href="profile.html" class="active">ARTISTS</a>
+            <a href="index.html#about">ABOUT</a>
+        </nav>
+    </header>
+
+    <header class="main-header">
+        <div class="container">
+            <h1 id="title">ARTISTS</h1>
+            <p class="subtitle" id="subtitle"></p>
+        </div>
+    </header>
+
+    <div class="filter-section">
+        <div class="container">
+            <nav id="filter-container" class="filter-nav"></nav>
+        </div>
+    </div>
+
+    <div class="container profile-container">
+        <section class="profile-section">
+            <div id="profile-grid" class="profile-grid"></div>
+        </section>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>decoding</h3>
+                <p>세상의 본질을 꿰뚫는 시선</p>
+            </div>
+            <div class="footer-section" style="text-align: right;">
+                <h3>encoding</h3>
+                <p>시각의 언어로 해결책을 설계</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function ScrambleText(element, options) {
+            const defaults = {
+                text: element.textContent,
+                scrambleChars: '<>-_\\/[]{}—=+*^?#',
+                scrambleSpeed: 50,
+                iterationStep: 0.1,
+                startDelay: 0,
+            };
+            const { text, scrambleChars, scrambleSpeed, iterationStep, startDelay } = { ...defaults, ...options };
+            let iteration = 0;
+            element.textContent = '';
+            setTimeout(() => {
+                const interval = setInterval(() => {
+                    element.textContent = text
+                        .split('')
+                        .map((char, index) => {
+                            if (char === ' ') return ' ';
+                            if (index < iteration) return text[index];
+                            return scrambleChars[Math.floor(Math.random() * scrambleChars.length)];
+                        })
+                        .join('');
+                    iteration += iterationStep;
+                    if (iteration >= text.length) {
+                        clearInterval(interval);
+                        element.textContent = text;
+                    }
+                }, scrambleSpeed);
+            }, startDelay);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const titleElement = document.getElementById('title');
+            const subtitleElement = document.getElementById('subtitle');
+
+            ScrambleText(titleElement, {
+                text: 'ARTISTS',
+                scrambleChars: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+                scrambleSpeed: 40,
+                iterationStep: 0.2,
+            });
+
+            const subtitles = [
+                '우리는 세상을 그리는 사람들',
+                '세상을 읽고 시각으로 답하는 디자이너들',
+                '현상의 본질을 꿰뚫는 아티스트들'
+            ];
+            let subtitleIndex = 0;
+
+            function changeAndScrambleSubtitle() {
+                ScrambleText(subtitleElement, {
+                    text: subtitles[subtitleIndex],
+                    scrambleChars: 'ㄱㄴㄷㄹㅁㅂㅅㅇㅈㅊㅋㅌㅍㅎ',
+                    scrambleSpeed: 30,
+                    iterationStep: 0.25
+                });
+                subtitleIndex = (subtitleIndex + 1) % subtitles.length;
+            }
+
+            setTimeout(changeAndScrambleSubtitle, 300);
+            setInterval(changeAndScrambleSubtitle, 5000);
+
+            const students = [
+                 { name: '강민진', major: 'UX/UI Design', email: 'kang.mj@example.com', website: 'minjin.design', image: 'https://placehold.co/400x400/E4E7EC/8B8B8B?text=KMJ' },
+                { name: '고영인', major: 'Interaction Design', email: 'go.yi@example.com', website: 'youngin.io', image: 'https://placehold.co/400x400/E4E7EC/8B8B8B?text=GYI' },
+                { name: '고한별', major: 'UX/UI Design', email: 'go.hb@example.com', website: 'hanbyeol.design', image: 'https://placehold.co/400x400/E4E7EC/8B8B8B?text=GHB' },
+                { name: '김혜민', major: 'Graphic Design', email: 'kim.hm@example.com', website: 'hyemin-kim.com', image: 'https://placehold.co/400x400/E4E7EC/8B8B8B?text=KHM' },
+                { name: '박성민', major: 'Visual Communication', email: 'park.sm@example.com', website: 'sungmin.park', image: 'https://placehold.co/400x400/E4E7EC/8B8B8B?text=PSM' },
+                { name: '박성욱', major: 'Product Design', email: 'park.sw@example.com', website: 'sungwook.dev', image: 'https://placehold.co/400x400/E4E7EC/8B8B8B?text=PSW' },
+                { name: '박시은', major: 'Interaction Design', email: 'park.se@example.com', website: 'sieun-park.io', image: 'https://placehold.co/400x400/E4E7EC/8B8B8B?text=PSE' },
+                { name: '박소현', major: 'Product Design', email: 'park.sh@example.com', website: 'sohyun.design', image: 'https://placehold.co/400x400/E4E7EC/8B8B8B?text=PSH' },
+                { name: '박송희', major: 'UX/UI Design', email: 'park.sh2@example.com', website: 'songhee.park', image: 'https://placehold.co/400x400/E4E7EC/8B8B8B?text=PSH2' },
+                { name: '서유정', major: 'Visual Communication', email: 'seo.yj@example.com', website: 'yujeong.seo', image: 'https://placehold.co/400x400/E4E7EC/8B8B8B?text=SYJ' },
+                { name: '송예준', major: 'Graphic Design', email: 'song.yj@example.com', website: 'yejunsong.art', image: 'https://placehold.co/400x400/E4E7EC/8B8B8B?text=SYJ' },
+                { name: '윤해주', major: 'UX/UI Design', email: 'yoon.hj@example.com', website: 'haejuyoon.com', image: 'https://placehold.co/400x400/E4E7EC/8B8B8B?text=YHJ' },
+                { name: '이민준', major: 'UX/UI Design', email: 'lee.mj@example.com', website: 'minjun.lee', image: 'https://placehold.co/400x400/E4E7EC/8B8B8B?text=LMJ' },
+                { name: '이상훈', major: 'Interaction Design', email: 'lee.sh@example.com', website: 'sanghoon.io', image: 'https://placehold.co/400x400/E4E7EC/8B8B8B?text=LSH' },
+                { name: '장서연', major: 'Graphic Design', email: 'jang.sy@example.com', website: 'seoyeon.jang', image: 'https://placehold.co/400x400/E4E7EC/8B8B8B?text=JSY' },
+                { name: '장영웅', major: 'Visual Communication', email: 'jang.yw@example.com', website: 'youngwoon.art', image: 'https://placehold.co/400x400/E4E7EC/8B8B8B?text=JYW' },
+                { name: '조예빈', major: 'Product Design', email: 'cho.ym@example.com', website: 'yemin.cho', image: 'https://placehold.co/400x400/E4E7EC/8B8B8B?text=CYM' },
+            ];
+
+            students.sort((a, b) => a.name.localeCompare(b.name, 'ko'));
+            
+            const profileGrid = document.getElementById('profile-grid');
+            const filterContainer = document.getElementById('filter-container');
+
+            const CONSONANTS = ['ㄱ', 'ㄲ', 'ㄴ', 'ㄷ', 'ㄸ', 'ㄹ', 'ㅁ', 'ㅂ', 'ㅃ', 'ㅅ', 'ㅆ', 'ㅇ', 'ㅈ', 'ㅉ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'];
+            
+            function getFirstConsonant(text) {
+                const firstChar = text.charCodeAt(0);
+                if (firstChar < 0xAC00 || firstChar > 0xD7A3) return text[0];
+                const consonantIndex = Math.floor((firstChar - 0xAC00) / 588);
+                return CONSONANTS[consonantIndex];
+            }
+
+            const filterGroups = [
+                { display: 'All', chars: 'All' },
+                { display: 'ㄱ', chars: 'ㄱㄲ' },
+                { display: 'ㅂ', chars: 'ㅂㅃ' },
+                { display: 'ㅅ', chars: 'ㅅㅆ' },
+                { display: 'ㅇ', chars: 'ㅇ' },
+                { display: 'ㅈ', chars: 'ㅈㅉㅊ' }
+            ];
+
+            filterGroups.forEach((filter) => {
+                const button = document.createElement('button');
+                button.classList.add('filter-item');
+                button.textContent = filter.display;
+                button.dataset.filter = filter.chars;
+                if (filter.chars === 'All') button.classList.add('active');
+                filterContainer.appendChild(button);
+            });
+            
+            function renderProfiles(studentList) {
+                profileGrid.innerHTML = '';
+                
+                if (studentList.length === 0) {
+                    const message = document.createElement('div');
+                    message.classList.add('empty-state');
+                    message.textContent = 'No students found';
+                    profileGrid.appendChild(message);
+                    return;
+                }
+
+                studentList.forEach(student => {
+                    const card = document.createElement('div');
+                    card.classList.add('profile-card');
+                    card.innerHTML = `
+                        <div class="profile-image-wrapper">
+                            <img class="profile-image" src="${student.image}" alt="${student.name} 프로필 이미지" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                            <div class="profile-image-placeholder" style="display:none;">${student.name.charAt(0)}</div>
+                        </div>
+                        <div class="profile-content">
+                            <div class="profile-header">
+                                <h3 class="profile-name">${student.name}</h3>
+                                <p class="profile-major">${student.major}</p>
+                            </div>
+                            <div class="profile-contact">
+                                <a href="mailto:${student.email}" title="${student.email}">${student.email}</a>
+                                <a href="https://${student.website}" target="_blank" title="https://${student.website}">${student.website}</a>
+                            </div>
+                        </div>
+                    `;
+                    profileGrid.appendChild(card);
+                });
+            }
+
+            filterContainer.addEventListener('click', (e) => {
+                if (e.target.classList.contains('filter-item')) {
+                    const selectedFilterChars = e.target.dataset.filter;
+                    document.querySelectorAll('.filter-item').forEach(btn => btn.classList.remove('active'));
+                    e.target.classList.add('active');
+
+                    let filteredStudents;
+                    if (selectedFilterChars === 'All') {
+                        filteredStudents = students;
+                    } else {
+                        filteredStudents = students.filter(student => {
+                            const firstConsonant = getFirstConsonant(student.name);
+                            return selectedFilterChars.includes(firstConsonant);
+                        });
+                    }
+                    renderProfiles(filteredStudents);
+                }
+            });
+
+            renderProfiles(students);
+        });
+    </script>
+</body>
+</html>

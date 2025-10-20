@@ -4,17 +4,44 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>아이디어 16: 상호작용하는 ASCII 언덕 (라이트 모드)</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Noto+Sans+KR:wght@400;500;600;700&family=Source+Code+Pro:wght@400;600;700&display=swap" rel="stylesheet">
     <!-- Swiper.js CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
 
     <style>
+        :root {
+            --c-white: #FFFFFF;
+            --c-light-gray: #E4E7EC;
+            --c-orange-red: #FF4A28;
+            --c-black: #000000;
+            --f-primary: 'Noto Sans KR', sans-serif;
+            --f-code: 'Source Code Pro', monospace;
+            --f-display: 'DotGothic16', sans-serif;
+        }
+        ::selection { background: var(--c-orange-red); color: var(--c-white); }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             margin: 0;
             /* 배경을 흰색으로 변경 */
             background-color: #ffffff;
-            font-family: 'SF Mono', 'Courier New', Courier, monospace;
+            font-family: var(--f-primary);
             color: #000000;
-            text-align: center; /* 전체적인 텍스트 중앙 정렬 */
+            padding-top: 71px; /* GNB 높이만큼 콘텐츠를 아래로 밀어냄 */
+        }
+
+        html, body {
+            /* 페이지 전체에서 가로 스크롤이 생기는 것을 방지합니다. */
+            overflow-x: hidden;
         }
         canvas {
             display: block;
@@ -27,20 +54,81 @@
         }
         .animation-section {
             height: 100vh; /* 화면 전체 높이를 차지 */
+            margin-top: -71px; /* body의 padding-top을 상쇄하여 화면을 꽉 채움 */
             display: flex;
             align-items: center;
             justify-content: center;
         }
+
         .image-overlay {
-            width: 100%;
+            position: absolute; /* 캔버스 위에 위치하도록 설정 */
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%); /* 정확한 중앙 정렬 */
             display: flex;
-            justify-content: center; /* 이미지들을 중앙 정렬 */
-            align-items: center;
             gap: 20px; /* 이미지 사이의 간격 */
-            padding: 33vh 0 5vh 0; /* 상단에 1/3 여백, 하단에 여백 추가 */
+            z-index: 10; /* 캔버스 위에 오도록 설정 */
+            text-align: center; /* 이 요소만 중앙 정렬 */
         }
         .image-overlay img {
             height: 50px; /* 이미지 높이 지정 */
+        }
+        /* Site Header */
+        .site-header {
+            position: fixed; /* 화면 상단에 고정 */
+            top: 0;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
+            background-color: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px); /* 배경 블러 효과 (모던한 느낌) */
+            z-index: 1000; /* 다른 요소들 위에 오도록 설정 */
+            border-bottom: 1px solid var(--c-light-gray);
+        }
+
+        .site-header .logo a {
+             font-family: var(--f-display);
+             font-size: 1.5rem;
+             font-weight: 400;
+             color: var(--c-black);
+             text-decoration: none;
+             letter-spacing: 0.1rem;
+             transition: color 0.3s ease;
+        }
+
+        .site-header .logo a:hover {
+            color: var(--c-orange-red);
+        }
+
+        .site-header nav {
+            display: flex;
+            gap: 8px;
+        }
+
+        .site-header nav a {
+            font-family: var(--f-primary);
+            font-size: 1rem;
+            font-weight: 400;
+            color: var(--c-black);
+            text-decoration: none;
+            padding: 8px 16px;
+            border: 1px solid transparent;
+            transition: all 0.2s ease;
+        }
+        
+        .site-header nav a:hover,
+        .site-header nav a.active {
+            border-color: var(--c-black);
+            background-color: var(--c-black);
+            color: var(--c-white);
+        }
+
+        /* 메인 페이지에서는 로고를 active 상태처럼 보이게 할 수 있습니다. */
+        .site-header .logo a.active {
+            color: var(--c-orange-red);
         }
         .content-section {
             display: flex;
@@ -78,6 +166,7 @@
         .projects-section {
             padding: 10vh 5vw; /* 상하, 좌우 여백 추가 */
             text-align: left; /* 텍스트 왼쪽 정렬 */
+            text-align: center; /* 이 섹션만 중앙 정렬 */
         }
         .projects-section h2 {
             font-size: 2em; /* 다른 제목과 폰트 크기 통일 */
@@ -108,8 +197,13 @@
         /* Swiper 컨테이너 스타일 */
         .swiper {
             width: 100%;
-            padding-top: 50px;
+            padding-top: 80px; /* 텍스트가 표시될 상단 공간 확보 */
             padding-bottom: 50px;
+            overflow: visible; /* 슬라이드 밖으로 나가는 요소를 보이게 함 */
+        }
+        /* Swiper.js가 생성하는 wrapper에도 overflow:visible을 적용합니다. */
+        .swiper-wrapper {
+            overflow: visible;
         }
         .swiper-slide {
             width: 292px; /* 중앙 카드 크기 기준 */
@@ -121,20 +215,21 @@
         }
         .card-text {
             position: absolute;
-            padding: 20px;
             color: #000;
             z-index: 5; /* 링크(a) 위에 텍스트가 오도록 설정 */
             pointer-events: none; /* 텍스트가 마우스 이벤트를 방해하지 않도록 설정 */
         }
         .card-text.top-left {
-            top: -10px; /* 카드의 상단 경계선 위로 텍스트를 이동 */
-            left: 0;
+            top: 0; /* 위치 기준을 카드 상단으로 설정 */
+            transform: translateY(-100%); /* 요소의 높이만큼 위로 이동하여 하단을 카드 상단에 맞춤 */
+            left: 20px; /* 왼쪽 여백 추가 */
             font-size: 1.8em;
             font-weight: bold;
         }
         .card-text.top-right {
-            top: -10px; /* 카드의 상단 경계선 위로 텍스트를 이동 */
-            right: 0;
+            top: 0; /* 위치 기준을 카드 상단으로 설정 */
+            transform: translateY(-100%); /* 요소의 높이만큼 위로 이동하여 하단을 카드 상단에 맞춤 */
+            right: 20px; /* 오른쪽 여백 추가 */
             font-size: 0.9em;
         }
         .swiper-slide a {
@@ -153,16 +248,25 @@
     </style>
 </head>
 <body>
-    <div class="image-overlay">
-        <img src="c.png" alt="c">
-        <img src="o.png" alt="o">
-        <img src="d.png" alt="d">
-        <img src="e.png" alt="e">
-    </div>
+    <!-- Site Header -->
+    <header class="site-header">
+        <div class="logo">
+            <a href="index.html" class="active">CODE.</a>
+        </div>
+        <nav>
+            <a href="projects.html">PROJECTS</a>
+            <a href="profile.html">ARTISTS</a>
+            <a href="index.html#about">ABOUT</a>
+        </nav>
+    </header>
+
     <div class="animation-section">
+        <div class="image-overlay">
+            <img src="c.png" alt="c"><img src="o.png" alt="o"><img src="d.png" alt="d"><img src="e.png" alt="e">
+        </div>
         <canvas id="canvas1"></canvas>
     </div>
-    <div class="content-section">
+    <div id="about" class="content-section">
         <div class="left-panel">
             <p>세상을 읽고</p>
             <h2>Decoding</h2>
@@ -186,8 +290,8 @@
             <div class="swiper-wrapper">
                 <!-- Slides -->
                 <div class="swiper-slide">
-                    <div class="card-text top-left">Lorem ipsum</div>
-                    <div class="card-text top-right">Lorem ipsum</div>
+                    <div class="card-text top-left">장영웅</div>
+                    <div class="card-text top-right">작품</div>
                     <a href="#"></a>
                 </div>
                 <div class="swiper-slide">
