@@ -37,13 +37,13 @@
             font-family: var(--f-primary);
             background-color: #f9f9f9;
             margin: 0;
-            padding: 60px 0;
             line-height: 1.6;
+            padding: 71px 0 60px; /* GNB 높이만큼 상단 여백 추가 */
         }
 
         .container {
             max-width: 1200px;
-            margin: 0 auto;
+            margin: 60px auto 0; /* 검색창과 GNB 사이에 60px 여백 추가 */
             padding: 0 20px;
         }
 
@@ -98,25 +98,6 @@
             border-color: var(--c-black);
             background-color: var(--c-black);
             color: var(--c-white);
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 80px;
-        }
-
-        .header h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: #222;
-            margin-bottom: 16px;
-        }
-
-        .header p {
-            font-size: 1.1rem;
-            color: #666;
-            max-width: 600px;
-            margin: 0 auto;
         }
 
         .timeline {
@@ -263,19 +244,6 @@
                 padding: 40px 0;
             }
 
-            .header {
-                margin-bottom: 60px;
-            }
-
-            .header h1 {
-                font-size: 2rem;
-            }
-
-            .header p {
-                font-size: 1rem;
-                padding: 0 20px;
-            }
-
             .timeline::before {
                 left: 12px;
                 transform: none;
@@ -317,10 +285,6 @@
         @media (max-width: 480px) {
             .container {
                 padding: 0 15px;
-            }
-
-            .header h1 {
-                font-size: 1.75rem;
             }
 
             .timeline-item {
@@ -409,12 +373,6 @@
     </header>
 
     <div class="container">
-        <!-- Header -->
-        <div class="header">
-            <h1>Graduation Exhibition</h1>
-            <p>Designers decode the world and re-encode it visually. Each portfolio represents a creative ripple connected by our shared timeline.</p>
-        </div>
-
         <!-- Search Bar -->
         <div class="search-container">
             <div class="search-bar">
