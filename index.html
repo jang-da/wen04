@@ -9,8 +9,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Noto+Sans+KR:wght@400;500;600;700&family=Source+Code+Pro:wght@400;600;700&display=swap" rel="stylesheet">
-    <!-- Swiper.js CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
 
     <style>
         :root {
@@ -137,113 +135,138 @@
             gap: 40px; /* 좌우 패널 사이 간격 */
             padding: 10vh 5vw; /* 상하, 좌우 여백 추가 */
         }
+        .about-container {
+            display: flex;
+            align-items: flex-start; /* 상단 정렬 */
+            gap: 40px;
+        }
         .left-panel {
             display: flex;
+            align-items: flex-end; /* Decoding 텍스트와 이미지 박스를 하단 정렬 */
+            gap: 20px;
+        }
+        .image-container {
+            display: flex;
             flex-direction: column;
-            gap: 20px; /* 내부 요소들 간의 간격 */
-            width: 490px; /* 너비 고정 */
-            text-align: left; /* 패널 내부 텍스트는 왼쪽 정렬 */
+            gap: 10px;
         }
         .right-text-panel {
             width: 250px; /* 오른쪽 패널 너비 설정 */
+            /* padding-top: 2.5em; /* '세상을 읽고' 텍스트와 높이를 맞추기 위한 여백 */ */
         }
         .right-text-panel p {
             margin: 0 0 1em 0; /* 단락 아래 여백 추가 */
             text-align: left; /* 패널 내부 텍스트는 왼쪽 정렬 */
         }
-        .left-panel p, .left-panel h2 {
+        .image-container p {
             margin: 0;
         }
         .left-panel h2 {
             font-size: 2em;
+            writing-mode: vertical-rl; /* 텍스트를 세로로 표시 */
+            transform: rotate(180deg); /* 글자를 바로 세움 */
+            margin-bottom: 0; /* Remove margin-bottom to align with flex-end */
         }
         .image-box {
-            width: 490px;
+            width: 400px; /* 너비 조정 */
             height: 690px;
             border: 1px solid #000000;
             box-sizing: border-box; /* 테두리를 크기에 포함 */
         }
-        .projects-section {
-            padding: 10vh 5vw; /* 상하, 좌우 여백 추가 */
-            text-align: left; /* 텍스트 왼쪽 정렬 */
-            text-align: center; /* 이 섹션만 중앙 정렬 */
+
+        /* Info Sections (from info.html) */
+        .info-section {
+            padding: 80px 0;
+            border-bottom: 1px solid var(--c-light-gray);
         }
-        .projects-section h2 {
-            font-size: 2em; /* 다른 제목과 폰트 크기 통일 */
-            margin: 0 0 40px 0; /* 제목 아래에 여백 추가 */
+
+        .info-section:last-of-type {
+            border-bottom: none;
         }
-        .project-filters {
+
+        .info-section h2 {
+            font-family: var(--f-display);
+            font-size: 2.5rem;
+            color: var(--c-dark-cocoa);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .info-section .content-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(300px, 1fr));
+            gap: 40px;
+            justify-content: center; /* 그리드 아이템들을 중앙 정렬합니다. */
+            justify-items: center; /* 각 그리드 셀 안의 아이템을 중앙 정렬합니다. */
+            margin-top: 40px;
+        }
+
+        .info-item {
+            /* 각 항목이 분리되어 보이도록 약간의 스타일 추가 */
+            padding: 20px;
+            text-align: center;
+            
+        }
+
+        .info-item h3 {
+            font-family: var(--f-primary);
+            font-size: 1.3rem; /* 제목 폰트 크기 조정 */
+            color: var(--c-black);
+            margin-bottom: 15px;
+        }
+
+        .info-item p {
+            font-size: 1rem;
+            color: var(--c-text-secondary);
+            line-height: 1.7;
+        }
+
+        /* 명단 스타일 */
+        .member-list p {
+            font-size: 1rem;
+            text-align: center; /* 명단 텍스트를 중앙 정렬합니다. */
+            line-height: 1.8;
+        }
+
+        /* Footer (from info.html) */
+        footer {
+            background: var(--c-black);
+            color: var(--c-white);
+            padding: 50px 0;
+            border-top: 1px solid var(--c-black);
+        }
+
+        footer .footer-content {
             display: flex;
-            flex-direction: column; /* 버튼을 세로로 정렬 */
-            align-items: flex-start; /* 버튼을 왼쪽에 정렬 */
-            gap: 15px; /* 버튼 사이 간격 */
-            margin-bottom: 40px; /* 필터 아래 여백 추가 (프로젝트 목록을 위해) */
+            justify-content: space-between;
+            max-width: 1800px;
+            margin: 0 auto;
+            padding: 0 40px;
         }
-        .project-filters button {
-            background-color: transparent;
-            border: 1px solid #000000;
-            border-radius: 20px; /* 둥근 모서리 */
-            padding: 8px 20px;
-            font-family: inherit; /* body의 폰트를 상속받음 */
-            font-size: 1em;
-            cursor: pointer;
-            transition: background-color 0.3s, color 0.3s;
+
+        footer .footer-section h3 {
+            font-family: var(--f-code);
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            font-weight: 400;
         }
-        .project-filters button:hover,
-        .project-filters button.active {
-            background-color: #000000;
-            color: #ffffff;
+
+        footer .footer-section p {
+            opacity: 0.7;
+            font-size: 0.9rem;
         }
-        /* Swiper 컨테이너 스타일 */
-        .swiper {
-            width: 100%;
-            padding-top: 80px; /* 텍스트가 표시될 상단 공간 확보 */
-            padding-bottom: 50px;
-            overflow: visible; /* 슬라이드 밖으로 나가는 요소를 보이게 함 */
+
+        /* Responsive for Info Sections and Footer */
+        @media (max-width: 768px) {
+            .info-section { padding: 60px 0; }
+            .info-section h2 { font-size: 2rem; }
+            .info-section .content-grid { grid-template-columns: 1fr; }
+            .info-item { padding: 25px; }
+            .info-item h3 { font-size: 1.3rem; }
+            footer .footer-content { flex-direction: column; gap: 30px; text-align: center; }
         }
-        /* Swiper.js가 생성하는 wrapper에도 overflow:visible을 적용합니다. */
-        .swiper-wrapper {
-            overflow: visible;
-        }
-        .swiper-slide {
-            width: 292px; /* 중앙 카드 크기 기준 */
-            height: 394px; /* 중앙 카드 크기 기준 */
-            box-sizing: border-box;
-            background-color: #e0e0e0; /* card.png의 회색과 유사한 배경색 */
-            border-radius: 15px; /* card.png와 유사한 둥근 모서리 */
-            position: relative; /* 내부 텍스트 위치 지정을 위한 기준 */
-        }
-        .card-text {
-            position: absolute;
-            color: #000;
-            z-index: 5; /* 링크(a) 위에 텍스트가 오도록 설정 */
-            pointer-events: none; /* 텍스트가 마우스 이벤트를 방해하지 않도록 설정 */
-        }
-        .card-text.top-left {
-            top: 0; /* 위치 기준을 카드 상단으로 설정 */
-            transform: translateY(-100%); /* 요소의 높이만큼 위로 이동하여 하단을 카드 상단에 맞춤 */
-            left: 20px; /* 왼쪽 여백 추가 */
-            font-size: 1.8em;
-            font-weight: bold;
-        }
-        .card-text.top-right {
-            top: 0; /* 위치 기준을 카드 상단으로 설정 */
-            transform: translateY(-100%); /* 요소의 높이만큼 위로 이동하여 하단을 카드 상단에 맞춤 */
-            right: 20px; /* 오른쪽 여백 추가 */
-            font-size: 0.9em;
-        }
-        .swiper-slide a {
-            display: block;
-            width: 100%;
-            height: 100%;
-        }
-        /* 페이지네이션(하단 점) 스타일 */
-        .swiper-pagination-bullet {
-            background-color: #888888 !important;
-            opacity: 1;
-        }
-        .swiper-pagination-bullet-active {
-            background-color: #000000 !important;
+        @media (max-width: 480px) {
+            .info-section h2 { font-size: 1.8rem; }
         }
     </style>
 </head>
@@ -266,122 +289,80 @@
         </div>
         <canvas id="canvas1"></canvas>
     </div>
-    <div id="about" class="content-section">
-        <div class="left-panel">
-            <p>세상을 읽고</p>
-            <h2>Decoding</h2>
-            <div class="image-box"></div>
-            <h2>Encoding</h2>
-        </div>
-        <div class="right-text-panel">
-            <p>시각으로 답하다</p>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et</p>
-        </div>
-    </div>
-    <div class="projects-section">
-        <h2>Featured Projects</h2>
-        <div class="project-filters">
-            <button class="active">전체</button>
-            <button>UX/UI</button>
-            <button>WEB</button>
-        </div>
-        <!-- Swiper 슬라이더 컨테이너 -->
-        <div class="swiper mySwiper">
-            <div class="swiper-wrapper">
-                <!-- Slides -->
-                <div class="swiper-slide">
-                    <div class="card-text top-left">장영웅</div>
-                    <div class="card-text top-right">작품</div>
-                    <a href="#"></a>
+    <div id="about" class="container">
+        <div class="content-section">
+            <div class="about-container">
+                <div class="left-panel">
+                    <h2>Decoding</h2>
+                    <div class="image-container">
+                        <p>세상을 읽고</p>
+                        <div class="image-box"></div>
+                        <p>시각으로 답하다</p>
+                    </div>
+                    <h2>Encoding</h2>
                 </div>
-                <div class="swiper-slide">
-                    <div class="card-text top-left">Lorem ipsum</div>
-                    <div class="card-text top-right">Lorem ipsum</div>
-                    <a href="#"></a>
-                </div>
-                <div class="swiper-slide">
-                    <div class="card-text top-left">Lorem ipsum</div>
-                    <div class="card-text top-right">Lorem ipsum</div>
-                    <a href="#"></a>
-                </div>
-                <div class="swiper-slide">
-                    <div class="card-text top-left">Lorem ipsum</div>
-                    <div class="card-text top-right">Lorem ipsum</div>
-                    <a href="#"></a>
-                </div>
-                <div class="swiper-slide">
-                    <div class="card-text top-left">Lorem ipsum</div>
-                    <div class="card-text top-right">Lorem ipsum</div>
-                    <a href="#"></a>
-                </div>
-                <div class="swiper-slide">
-                    <div class="card-text top-left">Lorem ipsum</div>
-                    <div class="card-text top-right">Lorem ipsum</div>
-                    <a href="#"></a>
-                </div>
-                <div class="swiper-slide">
-                    <div class="card-text top-left">Lorem ipsum</div>
-                    <div class="card-text top-right">Lorem ipsum</div>
-                    <a href="#"></a>
-                </div>
-                <div class="swiper-slide">
-                    <div class="card-text top-left">Lorem ipsum</div>
-                    <div class="card-text top-right">Lorem ipsum</div>
-                    <a href="#"></a>
-                </div>
-                <div class="swiper-slide">
-                    <div class="card-text top-left">Lorem ipsum</div>
-                    <div class="card-text top-right">Lorem ipsum</div>
-                    <a href="#"></a>
-                </div>
-                <div class="swiper-slide">
-                    <div class="card-text top-left">Lorem ipsum</div>
-                    <div class="card-text top-right">Lorem ipsum</div>
-                    <a href="#"></a>
-                </div>
-                <div class="swiper-slide">
-                    <div class="card-text top-left">Lorem ipsum</div>
-                    <div class="card-text top-right">Lorem ipsum</div>
-                    <a href="#"></a>
-                </div>
-                <div class="swiper-slide">
-                    <div class="card-text top-left">Lorem ipsum</div>
-                    <div class="card-text top-right">Lorem ipsum</div>
-                    <a href="#"></a>
-                </div>
-                <div class="swiper-slide">
-                    <div class="card-text top-left">Lorem ipsum</div>
-                    <div class="card-text top-right">Lorem ipsum</div>
-                    <a href="#"></a>
-                </div>
-                <div class="swiper-slide">
-                    <div class="card-text top-left">Lorem ipsum</div>
-                    <div class="card-text top-right">Lorem ipsum</div>
-                    <a href="#"></a>
-                </div>
-                <div class="swiper-slide">
-                    <div class="card-text top-left">Lorem ipsum</div>
-                    <div class="card-text top-right">Lorem ipsum</div>
-                    <a href="#"></a>
-                </div>
-                <div class="swiper-slide">
-                    <div class="card-text top-left">Lorem ipsum</div>
-                    <div class="card-text top-right">Lorem ipsum</div>
-                    <a href="#"></a>
-                </div>
-                <div class="swiper-slide">
-                    <div class="card-text top-left">Lorem ipsum</div>
-                    <div class="card-text top-right">Lorem ipsum</div>
-                    <a href="#"></a>
+                <div class="right-text-panel">
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et</p>
                 </div>
             </div>
-            <!-- 페이지네이션 -->
-            <div class="swiper-pagination"></div>
         </div>
     </div>
 
-    <!-- Swiper.js JS -->
-    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <!-- INFO Content (from info.html) -->
+    <div id="info-details" class="container">
+        <section class="info-section">
+            <h2>INFO</h2>
+            <div class="content-grid">
+                <div class="info-item" style="grid-column: 1 / -1;">
+                    <h3>졸업전시위원</h3>
+                    <div class="member-list">
+                        <p>홍길동</p>
+                        <p>김철수</p>
+                        <p>이영희</p>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <h3>웹</h3>
+                    <div class="member-list">
+                        <p>장영웅</p>
+                        <p>박민준</p>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <h3>영상</h3>
+                    <div class="member-list">
+                        <p>최지혜</p>
+                        <p>윤서아</p>
+                    </div>
+                </div>
+                <div style="grid-column: 1 / -1;"></div> <!-- Force new row -->
+                <div class="info-item">
+                    <h3>소형배너</h3>
+                    <div class="member-list">
+                        <p>정수진</p>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <h3>대형배너</h3>
+                    <div class="member-list">
+                        <p>윤서준</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>decoding</h3>
+                <p>세상의 본질을 꿰뚫는 시선</p>
+            </div>
+            <div class="footer-section" style="text-align: right;">
+                <h3>encoding</h3>
+                <p>시각의 언어로 해결책을 설계</p>
+            </div>
+        </div>
+    </footer>
 
     <script>
         // --- 공통 설정 ---
@@ -477,93 +458,6 @@
             }
             animate();
         }
-
-        // --- 생성형 언덕 애니메이션 실행 ---
-        createWaveAnimation('canvas1', {
-            updateLogic: (columns, mouse, frameCount, config) => {
-                const canvas = document.getElementById('canvas1');
-                const maxHeight = canvas.clientHeight * 0.4;
-                const midPoint = config.numberOfColumns / 2;
-                const time = frameCount * 0.005;
-                const pulse = (Math.sin(time) + 1) / 2;
-                const totalWidth = config.columnSpacing * (config.numberOfColumns - 1);
-                const startX = (canvas.clientWidth - totalWidth) / 2;
-
-
-                columns.forEach((col, i) => {
-                    const distanceFromCenter = i - midPoint;
-                    const normalizedDist = distanceFromCenter / midPoint;
-                    const hillHeight = 1 - (normalizedDist * normalizedDist); 
-                    const animatedHeight = maxHeight * hillHeight * (0.85 + pulse * 0.15);
-
-                    // 마우스 효과 계산
-                    let mouseEffect = 0;
-                    if (mouse.x !== null) {
-                        const columnX = startX + i * config.columnSpacing;
-                        const distance = Math.abs(columnX - mouse.x);
-                        if (distance < config.mouseInfluenceRadius) {
-                            const normalized = distance / config.mouseInfluenceRadius;
-                            mouseEffect = config.maxMouseEffectHeight * ((Math.cos(normalized * Math.PI) + 1) / 2);
-                        }
-                    }
-                    
-                    col.targetHeight = animatedHeight + mouseEffect;
-                });
-            },
-            drawLogic: (ctx, columnIndex, x, count, height, config) => {
-                ctx.fillStyle = config.baseColor;
-                // 흰 배경에서는 그림자 효과를 제거하여 깔끔하게 표시
-                // ctx.shadowColor = config.baseColor;
-                // ctx.shadowBlur = 4;
-                const midPoint = config.numberOfColumns / 2;
-
-                for (let j = 0; j < count; j++) {
-                    const horizontalFactor = 1 - Math.abs((columnIndex - midPoint) / midPoint);
-                    const verticalFactor = count > 1 ? 1 - (j / (count - 1)) : 1;
-                    
-                    const darkness = (horizontalFactor * 0.6) + (verticalFactor * 0.4);
-
-                    const baseLevel = darkness * (charLevels.length - 1);
-                    let levelIndex = Math.floor(baseLevel);
-                    
-                    const probability = baseLevel - levelIndex;
-                    const ditherValue = (((columnIndex * 7) + (j * 11)) % 13) / 13;
-                    if (ditherValue < probability) {
-                        levelIndex++;
-                    }
-                    
-                    const clampedIndex = Math.max(0, Math.min(charLevels.length - 1, levelIndex));
-                    const charSet = charLevels[clampedIndex];
-                    const char = charSet[(columnIndex + j) % charSet.length];
-                    
-                    ctx.fillText(char, x, (j * config.verticalSpacing) + config.fontSize);
-                }
-            }
-        });
-
-        // --- Swiper.js 초기화 ---
-        var swiper = new Swiper(".mySwiper", {
-            effect: "coverflow", // 커버플로우 효과 적용
-            grabCursor: true,      // 마우스 커서를 잡는 모양으로 변경
-            centeredSlides: true,  // 활성 슬라이드를 중앙에 배치
-            slidesPerView: "auto", // 한 번에 보여줄 슬라이드 개수를 자동으로 설정
-            loop: true,            // 무한 루프 활성화
-            autoplay: {
-              delay: 2500, // 2.5초마다 자동으로 슬라이드
-              disableOnInteraction: false, // 사용자가 조작한 후에도 자동 슬라이드 계속
-            },
-            coverflowEffect: {
-                rotate: 0,         // 슬라이드 회전 각도 (0으로 설정하여 정면 유지)
-                stretch: -100,       // 슬라이드 간 간격 (음수 값으로 겹치게 설정)
-                depth: 400,        // 슬라이드 간 깊이감 (크기 변화)
-                modifier: 1,       // 효과 강도
-                slideShadows: false, // 슬라이드 그림자 비활성화
-            },
-            pagination: {
-                el: ".swiper-pagination",
-                clickable: true,   // 페이지네이션 버튼 클릭 가능
-            },
-        });
     </script>
 </body>
 </html>
